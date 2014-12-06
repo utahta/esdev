@@ -1,0 +1,8 @@
+- name: change timezone Asia/Tokyo
+  template: src=timezone/clock dest=/etc/sysconfig/clock owner=root mode=0644
+
+- name: delete /etc/localtime
+  file: path=/etc/localtime state=absent
+
+- name: link Asia/Tokyo to localtime
+  file: src=/usr/share/zoneinfo/Asia/Tokyo dest=/etc/localtime state=link

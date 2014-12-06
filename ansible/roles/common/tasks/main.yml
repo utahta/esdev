@@ -1,0 +1,9 @@
+- name: clear ansible cache directory
+  file: path=/tmp/ansible state=absent
+- name: create ansible cache directory
+  file: path=/tmp/ansible state=directory
+
+- include: yum.yml
+- include: locale.yml
+- include: timezone.yml
+- include: ntp.yml

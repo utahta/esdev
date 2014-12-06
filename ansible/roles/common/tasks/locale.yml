@@ -1,0 +1,2 @@
+- name: change locale ja_JP
+  command: /usr/bin/localedef -f UTF-8 -i ja_JP ja_JP.UTF-8

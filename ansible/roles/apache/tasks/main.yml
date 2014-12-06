@@ -1,0 +1,18 @@
+- name: install packages
+  yum: name={{ item }} state=present
+  with_items:
+    - httpd
+    - httpd-devel
+    - mod_ssl
+
+- name: overwrite httpd.conf
+  template: src=httpd.conf dest=/etc/httpd/conf/httpd.conf
+
+- name: httpd start on boot
+  service: name=httpd state=started enabled=yes
+
+- name: chmod +x home dir
+  file: path=/home/vagrant mode=0711
+
+- name: create public_html
+  file: path=/home/vagrant/public_html state=directory

@@ -1,0 +1,9 @@
+- hosts: all
+  connection: local
+  sudo: true
+  roles:
+    - common
+    - zsh
+    - git
+    - apache
+    - elasticsearch

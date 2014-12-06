@@ -1,0 +1,19 @@
+- name: install dependency packages
+  yum: name={{ item }} state=present
+  with_items:
+    - ncurses-devel
+
+- name: download zsh archive
+  get_url: url=https://downloads.sourceforge.net/project/zsh/zsh/{{ zsh_ver }}/zsh-{{ zsh_ver }}.tar.gz dest=/tmp/ansible/zsh-{{ zsh_ver }}.tar.gz
+
+- name: extract zsh archive
+  command: tar zxf zsh-{{ zsh_ver }}.tar.gz chdir=/tmp/ansible
+
+- name: configure zsh
+  command: ./configure --with-tcsetpgrp chdir=/tmp/ansible/zsh-{{ zsh_ver }}
+
+- name: make zsh
+  command: make chdir=/tmp/ansible/zsh-{{ zsh_ver }}
+
+- name: make install zsh
+  command: make install chdir=/tmp/ansible/zsh-{{ zsh_ver }}

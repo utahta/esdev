@@ -1,0 +1,47 @@
+- name: import key
+  rpm_key: state=present key=http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+
+- name: add yum repository
+  template: src=elasticsearch.repo dest=/etc/yum.repos.d/elasticsearch.repo
+
+- name: install packages
+  yum: name={{ item }} state=present
+  with_items:
+    - java-1.7.0-openjdk
+    - elasticsearch
+
+- name: elasticsearch start on boot
+  service: name=elasticsearch state=started enabled=yes
+
+- name: check marvel plugin exists
+  shell: test ! -d /usr/share/elasticsearch/plugins/marvel
+  register: result
+  failed_when: result.rc not in [0, 1]
+- name: install plugin marvel
+  command: /usr/share/elasticsearch/bin/plugin -install elasticsearch/marvel/latest
+  when: result.rc == 0
+
+- name: check inquisitor plugin exists
+  shell: test ! -d /usr/share/elasticsearch/plugins/inquisitor
+  register: result
+  failed_when: result.rc not in [0, 1]
+- name: install plugin inquisitor
+  command: /usr/share/elasticsearch/bin/plugin -install polyfractal/elasticsearch-inquisitor
+  when: result.rc == 0
+
+- name: check kuromoji plugin exists
+  shell: test ! -d /usr/share/elasticsearch/plugins/analysis-kuromoji
+  register: result
+  failed_when: result.rc not in [0, 1]
+- name: install plugin kuromoji
+  command: /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-analysis-kuromoji/2.4.1
+  when: result.rc == 0
+
+- name: download kibana
+  get_url: url=https://download.elasticsearch.org/kibana/kibana/kibana-{{ kibana_ver }}.tar.gz dest=/home/vagrant/public_html/kibana-{{ kibana_ver }}.tar.gz
+
+- name: extract kibana
+  command: tar zxvf kibana-{{ kibana_ver }}.tar.gz chdir=/home/vagrant/public_html
+
+- name: link kibana
+  file: src=/home/vagrant/public_html/kibana-{{ kibana_ver }}.tar.gz dest=/home/vagrant/public_html/kibana state=link
