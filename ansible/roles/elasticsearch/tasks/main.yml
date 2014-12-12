@@ -37,14 +37,10 @@
   command: /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-analysis-kuromoji/2.4.1
   when: result.rc == 0
 
-- name: download kibana archive
-  get_url: url=https://download.elasticsearch.org/kibana/kibana/kibana-{{ kibana_ver }}.tar.gz dest=/home/vagrant/public_html/kibana-{{ kibana_ver }}.tar.gz
-
-- name: extract kibana archive
-  command: tar zxvf kibana-{{ kibana_ver }}.tar.gz chdir=/home/vagrant/public_html
-
-- name: delete kibana archive
-  file: path=/home/vagrant/public_html/kibana-{{ kibana_ver }}.tar.gz state=absent
-
-- name: link kibana
-  file: src=/home/vagrant/public_html/kibana-{{ kibana_ver }} dest=/home/vagrant/public_html/kibana state=link
+- name: check kibana3 plugin exists
+  shell: test ! -d /usr/share/elasticsearch/plugins/kibana3
+  register: result
+  failed_when: result.rc not in [0, 1]
+- name: install plugin kibana3
+  command: /usr/share/elasticsearch/bin/plugin -url http://download.elasticsearch.org/kibana/kibana/kibana-{{ kibana_ver }}.zip -install elasticsearch/kibana3
+  when: result.rc == 0
