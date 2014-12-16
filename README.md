@@ -7,6 +7,3 @@
 * inquisitor
 * marvel
 * kibana3
-* git
-* zsh
-* apache
